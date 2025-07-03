@@ -265,4 +265,4 @@ server.port=9090
 
 ## 📚 Documentação Adicional
 
-- [Arquitetura Detalhada](docs/ARCHITECTURE.md)
+- [Arquitetura Detalhada](calcular/docs/ARCHITECTURE.md)
