@@ -10,6 +10,7 @@ import { handleApiError } from '../utils/handleApiError';
 import LoanResult from './LoanResult';
 import LoanForm from './LoanForm';
 import type { LoanResultRow } from '../types/loan';
+import type { LoanFormErrors } from '../types/loanFormSchema';
 
 const initialForm: LoanFormSchema = {
   dataInicial: '',
@@ -21,7 +22,7 @@ const initialForm: LoanFormSchema = {
 
 const LoanCalculator: React.FC = () => {
   const [form, setForm] = useState(initialForm);
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<LoanFormErrors>({});
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<LoanResultRow[] | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -29,17 +30,17 @@ const LoanCalculator: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev: LoanFormSchema) => ({ ...prev, [name]: value }));
-    if (value) setErrors((prev: any) => ({ ...prev, [name]: undefined }));
+    if (value) setErrors((prev: LoanFormErrors) => ({ ...prev, [name]: undefined }));
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const validation = loanFormSchema.safeParse({ ...form, [name]: value });
     if (validation.success) {
-      setErrors((prev: any) => ({ ...prev, [name]: undefined }));
+      setErrors((prev: LoanFormErrors) => ({ ...prev, [name]: undefined }));
     } else {
       const fieldError = validation.error.flatten().fieldErrors[name as keyof LoanFormSchema];
-      setErrors((prev: any) => ({ ...prev, [name]: fieldError }));
+      setErrors((prev: LoanFormErrors) => ({ ...prev, [name]: fieldError }));
     }
   };
 
@@ -51,20 +52,19 @@ const LoanCalculator: React.FC = () => {
       setErrors(resultZod.error.flatten().fieldErrors);
       return;
     }
-    
+
     setErrors({});
     setLoading(true);
     setResult(null);
     try {
-      // Limpa e converte o valor
       const cleanValue = form.valor.replace('R$ ', '').replace(/\./g, '').replace(',', '.');
       const numericValue = Number(cleanValue);
-      
+
       if (isNaN(numericValue) || numericValue <= 0) {
         setApiError('Valor inválido. Digite um valor maior que zero.');
         return;
       }
-      
+
       const { data } = await api.post('emprestimos/calcular-parcelas', {
         ...form,
         valor: numericValue,
@@ -75,8 +75,8 @@ const LoanCalculator: React.FC = () => {
 
       if (!Array.isArray(data)) setApiError('Resposta inesperada do servidor.');
 
-      
-    } catch (err: any) {
+
+    } catch (err: unknown) {
       setApiError(handleApiError(err));
     } finally {
       setLoading(false);
@@ -91,11 +91,11 @@ const LoanCalculator: React.FC = () => {
       <Header />
       <main className="flex-1 flex flex-col items-center justify-center w-full px-2 py-8 ">
         <div className="w-full flex flex-col items-center justify-center mx-auto">
-          <Card className="w-full p-0 md:p-0 shadow-lg border border-blue-100 w-full">
+          <Card className="w-full p-0 md:p-0 shadow-lg border border-blue-100">
             <CardContent className="p-0 md:p-8 py-4  px-4">
               <div className="flex items-center gap-3 mb-8">
                 <span className="bg-blue-100 rounded-full p-3 shadow flex items-center">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="4" fill="#1976d2"/><rect x="6" y="7" width="12" height="2" rx="1" fill="#fff"/><rect x="6" y="11" width="7" height="2" rx="1" fill="#fff"/></svg>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="4" fill="#1976d2" /><rect x="6" y="7" width="12" height="2" rx="1" fill="#fff" /><rect x="6" y="11" width="7" height="2" rx="1" fill="#fff" /></svg>
                 </span>
                 <Title as="h2" className="text-[15px] md:text-3xl">Simule seu empréstimo</Title>
               </div>
