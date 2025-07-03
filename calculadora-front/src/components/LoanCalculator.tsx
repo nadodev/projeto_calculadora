@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import api from '../api';
 import Title from './Title';
 import { loanFormSchema } from '../utils/loanFormSchema';
-import type { LoanFormSchema } from '../utils/loanFormSchema';
+import type { LoanFormErrors, LoanFormSchema } from '../utils/loanFormSchema';
 import { columns } from '../utils/Columns';
 import { Header } from './Header';
 import { Card, CardContent } from './ui/card';
@@ -10,7 +10,6 @@ import { handleApiError } from '../utils/handleApiError';
 import LoanResult from './LoanResult';
 import LoanForm from './LoanForm';
 import type { LoanResultRow } from '../types/loan';
-import type { LoanFormErrors } from '../types/loanFormSchema';
 
 const initialForm: LoanFormSchema = {
   dataInicial: '',

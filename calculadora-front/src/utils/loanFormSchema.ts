@@ -26,3 +26,5 @@ export const loanFormSchema = z.object({
 );
 
 export type LoanFormSchema = z.infer<typeof loanFormSchema>; 
+
+export type LoanFormErrors = Partial<Record<keyof LoanFormSchema, string[] | undefined>>;
