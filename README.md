@@ -116,7 +116,7 @@ Cada linha contém:
 git clone [url-do-repositorio]
 
 # Entre no diretório
-cd calculadora-back
+cd calcular
 ```
 
 ### Endpoint
