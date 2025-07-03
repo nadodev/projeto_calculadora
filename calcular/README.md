@@ -116,7 +116,16 @@ Cada linha contém:
 git clone [url-do-repositorio]
 
 # Entre no diretório
-cd calculadora-back
+cd projeto_calculadora
+cd calcular
+```
+
+**Configurar Cors**
+- resources/application.properties
+
+É preciso configurar a url do front end nesse arquivo.
+```
+cors.allowed-origins=http://localhost:5175
 ```
 
 ### Endpoint
